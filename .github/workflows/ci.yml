@@ -20,6 +20,8 @@ jobs:
         run: npm ci
       - working-directory: backend
         run: npm run build
+      - working-directory: backend
+        run: npm test
 
   dashboard:
     runs-on: ubuntu-latest
