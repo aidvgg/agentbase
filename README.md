@@ -78,7 +78,6 @@ agentbase/
 ├── backend/
 │   ├── src/
 │   │   ├── agent.ts              # Main agent wrapper class
-│   │   ├── coordinator.ts        # Redis coordination layer
 │   │   ├── config-parser.ts      # YAML config parser
 │   │   ├── metrics-api.ts        # Express + WebSocket API
 │   │   └── index.ts              # Agent entrypoint

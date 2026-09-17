@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import { DiscordAgent } from './agent.js';
-import { ConfigParser } from './config-parser.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
