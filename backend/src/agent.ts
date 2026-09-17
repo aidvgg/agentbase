@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { Client, GatewayIntentBits, Message } from "discord.js";
 import { createClient, RedisClientType } from "redis";
 import fs from "fs";
+import os from "os";
 import { tools, ToolExecutor } from "./tools.js";
 
 interface AgentConfig {
@@ -32,6 +33,8 @@ export class DiscordAgent {
   private tasksCompleted: number = 0;
   private startTime: number;
   private toolExecutor: ToolExecutor;
+  private lastCpuUsage: NodeJS.CpuUsage = process.cpuUsage();
+  private lastCpuSampleAt: number = Date.now();
 
   constructor(config: AgentConfig) {
     this.agentId = config.agentId;
@@ -281,13 +284,24 @@ export class DiscordAgent {
         status: "online",
         uptime: uptimeStr,
         tasks_completed: this.tasksCompleted.toString(),
-        cpu: Math.random() * 30 + 10, // Simulated CPU usage
-        memory: Math.random() * 40 + 30, // Simulated memory usage
+        cpu: this.sampleCpuPercent().toFixed(2),
+        memory: ((process.memoryUsage().rss / os.totalmem()) * 100).toFixed(2),
         last_updated: Date.now().toString(),
       });
     } catch (error) {
       console.error(`[${this.agentId}] Failed to update metrics:`, error);
     }
+  }
+
+  // Percent of one CPU core used by this process since the previous sample.
+  private sampleCpuPercent(): number {
+    const now = Date.now();
+    const used = process.cpuUsage(this.lastCpuUsage);
+    const elapsedMs = now - this.lastCpuSampleAt;
+    this.lastCpuUsage = process.cpuUsage();
+    this.lastCpuSampleAt = now;
+    if (elapsedMs <= 0) return 0;
+    return ((used.user + used.system) / 1000 / elapsedMs) * 100;
   }
 
   private startMetricsReporting(): void {
