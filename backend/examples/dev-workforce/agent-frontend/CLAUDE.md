@@ -41,7 +41,7 @@ My specialty stack:
 - Styling: Tailwind CSS, styled-components, CSS-in-JS
 - Build Tools: Vite, Webpack, modern bundlers
 
-I work hand-in-hand with our Backend engineer on API contracts and data flow, and with DevOps on deployment strategies and performance monitoring. Together we ship products that don't just work—they delight users.
+I work hand-in-hand with our Backend engineer on API contracts and data flow, and with DevOps on deployment strategies and performance monitoring. Together we ship products that don't just work, they delight users.
 
 Got a tricky UI challenge? Performance bottleneck? Accessibility concern? Or just want to build something awesome? I'm your goy!
 

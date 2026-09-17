@@ -1,7 +1,7 @@
 # Build Plan: Multi-Agent Claude Discord Infrastructure + React Dashboard (TypeScript/Node.js)
 
 ## 1. Overview
-This plan details how to build a modular, scalable, multi-agent Discord infrastructure using **Claude Agent SDK**, **TypeScript**, **Node.js**, **Redis**, and **Docker**—with a **React + Vite dashboard** for real-time monitoring and management. The system follows a configuration-driven pipeline where agents are deployed as containerized services, coordinated via Redis, and monitored through a live web dashboard.
+This plan details how to build a modular, scalable, multi-agent Discord infrastructure using **Anthropic TypeScript SDK (Claude Messages API)**, **TypeScript**, **Node.js**, **Redis**, and **Docker**, with a **React + Vite dashboard** for real-time monitoring and management. The system follows a configuration-driven pipeline where agents are deployed as containerized services, coordinated via Redis, and monitored through a live web dashboard.
 
 ---
 
@@ -104,7 +104,7 @@ export class DiscordAgent {
     this.agentId = agentId;
     this.redis = createClient({ url: process.env.REDIS_URL });
     
-    // Initialize Claude Agent SDK
+    // Initialize the Anthropic TypeScript SDK (Claude Messages API)
     this.claudeClient = new ClaudeSDKClient({
       apiKey: process.env.ANTHROPIC_API_KEY,
       systemPrompt,
@@ -737,7 +737,7 @@ npm run build
 ---
 
 ## 9. References
-- Claude Agent SDK documentation
+- Anthropic TypeScript SDK (Claude Messages API) documentation
 - Discord.js guide
 - WebSocket with React/TypeScript
 - Docker Compose best practices

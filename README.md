@@ -1,8 +1,10 @@
 # AgentBase
 
+[![CI](https://github.com/aidvgg/agentbase/actions/workflows/ci.yml/badge.svg)](https://github.com/aidvgg/agentbase/actions/workflows/ci.yml)
+
 > Multi-Agent Claude Discord Infrastructure
 
-A scalable, modular, multi-agent Discord infrastructure powered by the Claude Agent SDK, TypeScript, Redis, and Docker — with a real-time React dashboard for monitoring and management.
+A scalable, modular, multi-agent Discord infrastructure powered by the Anthropic TypeScript SDK (Claude Messages API), TypeScript, Redis, and Docker, with a real-time React dashboard for monitoring and management.
 
 ---
 
@@ -26,12 +28,12 @@ A scalable, modular, multi-agent Discord infrastructure powered by the Claude Ag
 
 ## Features
 
-- **Multi-Agent Coordination** — Deploy multiple specialized AI agents with unique personalities and capabilities.
-- **Discord Integration** — Each agent runs as a Discord bot, responding to mentions and direct messages.
-- **Real-time Monitoring** — Live dashboard showing agent status, metrics, and activity logs.
-- **Containerized Deployment** — Docker-based architecture for easy scaling and isolation.
-- **Redis Coordination** — Inter-agent communication and metrics via Redis pub/sub.
-- **TypeScript** — Fully typed codebase for reliability and maintainability.
+- **Multi-Agent Coordination**, deploy multiple specialized AI agents with unique personalities and capabilities.
+- **Discord Integration**, each agent runs as a Discord bot, responding to mentions and direct messages.
+- **Real-time Monitoring**, live dashboard showing agent status, metrics, and activity logs.
+- **Containerized Deployment**, Docker-based architecture for easy scaling and isolation.
+- **Redis Coordination**, inter-agent communication and metrics via Redis pub/sub.
+- **TypeScript**, fully typed codebase for reliability and maintainability.
 
 ---
 
@@ -57,7 +59,7 @@ A scalable, modular, multi-agent Discord infrastructure powered by the Claude Ag
        │               │               │
   ┌────▼────┐    ┌────▼────┐    ┌────▼────┐
   │  Agent  │    │  Agent  │    │  Agent  │
-  │ Denver  │    │ Phoenix │    │ Sierra  │
+  │ Backend │    │ DevOps  │    │Frontend │
   └────┬────┘    └────┬────┘    └────┬────┘
        │              │              │
        └──────────────┼──────────────┘
@@ -81,11 +83,11 @@ agentbase/
 │   │   ├── metrics-api.ts        # Express + WebSocket API
 │   │   └── index.ts              # Agent entrypoint
 │   ├── examples/
-│   │   └── sample-workforce/
-│   │       ├── agent-denver/     # Technical support agent
-│   │       ├── agent-phoenix/    # Creative content agent
-│   │       ├── agent-sierra/     # Research & analysis agent
-│   │       └── workforce.yaml    # Team configuration
+│   │   └── dev-workforce/
+│   │       ├── agent-backend/    # Senior backend engineer
+│   │       ├── agent-devops/     # Senior DevOps engineer
+│   │       ├── agent-frontend/   # Senior frontend engineer
+│   │       └── dev-workforce.yaml # Team configuration
 │   ├── Dockerfile
 │   ├── Dockerfile.metrics
 │   ├── docker-compose.yml
@@ -112,10 +114,10 @@ agentbase/
 - Discord bot tokens (one per agent)
 - Anthropic API keys (one per agent)
 
-### Step 1 — Set Up Discord Bots
+### Step 1 - Set Up Discord Bots
 
 1. Go to the [Discord Developer Portal](https://discord.com/developers/applications).
-2. Create 3 applications (`Denver`, `Phoenix`, `Sierra`).
+2. Create 3 applications (`backend`, `devops`, `frontend`).
 3. For each application:
    - Open the **Bot** section and click **Add Bot**.
    - Copy the bot token.
@@ -124,7 +126,7 @@ agentbase/
    - Select the `bot` scope and the `Send Messages` and `Read Messages/View Channels` permissions.
    - Use the generated URL to invite the bot to your server.
 
-### Step 2 — Configure Environment Variables
+### Step 2 - Configure Environment Variables
 
 ```bash
 cd backend
@@ -134,17 +136,17 @@ cp .env.example .env
 Edit `.env` and add your API keys and bot tokens:
 
 ```env
-DENVER_API_KEY=sk-ant-api03-your-denver-key
-DENVER_DISCORD_TOKEN=your-denver-bot-token
+BACKEND_API_KEY=sk-ant-api03-your-backend-key
+BACKEND_DISCORD_TOKEN=your-backend-bot-token
 
-PHOENIX_API_KEY=sk-ant-api03-your-phoenix-key
-PHOENIX_DISCORD_TOKEN=your-phoenix-bot-token
+DEVOPS_API_KEY=sk-ant-api03-your-devops-key
+DEVOPS_DISCORD_TOKEN=your-devops-bot-token
 
-SIERRA_API_KEY=sk-ant-api03-your-sierra-key
-SIERRA_DISCORD_TOKEN=your-sierra-bot-token
+FRONTEND_API_KEY=sk-ant-api03-your-frontend-key
+FRONTEND_DISCORD_TOKEN=your-frontend-bot-token
 ```
 
-### Step 3 — Start the Backend
+### Step 3 - Start the Backend
 
 ```bash
 cd backend
@@ -158,15 +160,15 @@ docker-compose up --build
 
 This will start:
 
-| Service       | Port  |
-| ------------- | ----- |
-| Redis         | 6379  |
-| Agent Denver  | —     |
-| Agent Phoenix | —     |
-| Agent Sierra  | —     |
-| Metrics API   | 3001  |
+| Service        | Port  |
+| -------------- | ----- |
+| Redis          | 6379  |
+| Agent Backend  | n/a   |
+| Agent DevOps   | n/a   |
+| Agent Frontend | n/a   |
+| Metrics API    | 3001  |
 
-### Step 4 — Start the Dashboard
+### Step 4 - Start the Dashboard
 
 ```bash
 cd dashboard
@@ -189,25 +191,25 @@ The dashboard will be available at [http://localhost:5173](http://localhost:5173
 In Discord, mention an agent or send it a direct message:
 
 ```text
-@Denver  My computer won't boot, what should I do?
-@Phoenix Help me write a blog post about productivity.
-@Sierra  What are the latest trends in renewable energy?
+@backend  Design a REST endpoint for user auth.
+@devops   Help me set up a CI/CD pipeline.
+@frontend What's the best way to optimize this React component?
 ```
 
 ### Customizing Agents
 
-Each agent has its own system prompt at `backend/examples/sample-workforce/agent-{name}/CLAUDE.md`. Edit these files to customize agent behavior.
+Each agent has its own system prompt at `backend/examples/dev-workforce/agent-{name}/CLAUDE.md`. Edit these files to customize agent behavior.
 
 ### Adding New Agents
 
-1. Create a new directory: `backend/examples/sample-workforce/agent-{name}/`.
+1. Create a new directory: `backend/examples/dev-workforce/agent-{name}/`.
 2. Add a `CLAUDE.md` file with the system prompt.
-3. Add the agent to `workforce.yaml`:
+3. Add the agent to `dev-workforce.yaml`:
 
    ```yaml
    agents:
      - name: "yourname"
-       config_path: "examples/sample-workforce/agent-yourname"
+       config_path: "examples/dev-workforce/agent-yourname"
        env:
          ANTHROPIC_API_KEY: "${YOURNAME_API_KEY}"
          DISCORD_BOT_TOKEN: "${YOURNAME_DISCORD_TOKEN}"
@@ -263,7 +265,6 @@ npm run preview
 | GET    | `/health`                  | Health check                 |
 | GET    | `/api/metrics`             | Get all agent metrics        |
 | GET    | `/api/metrics/:agentId`    | Get specific agent metrics   |
-| GET    | `/api/activity`            | Get recent activity logs     |
 | GET    | `/api/stats`               | Get system statistics        |
 | WS     | `ws://localhost:3001`      | Real-time updates            |
 
@@ -275,7 +276,7 @@ npm run preview
   "activeAgents": 3,
   "agents": [
     {
-      "agentId": "denver",
+      "agentId": "backend",
       "status": "online",
       "uptime": "2h 15m",
       "tasksCompleted": 42,
@@ -288,29 +289,21 @@ npm run preview
 }
 ```
 
+`cpu` and `memory` are simulated placeholder values generated by the agent process, not measured resource usage.
+
 ---
 
 ## Deployment
 
 ### Production Deployment
 
-1. **Backend** — Deploy to any Docker-compatible platform (AWS ECS, Fly.io, Railway, etc.).
-2. **Dashboard** — Deploy to Vercel, Netlify, or any static hosting.
-3. **Redis** — Use a managed Redis service (Upstash, Redis Cloud, AWS ElastiCache).
+1. **Backend**, deploy to any Docker-compatible platform (AWS ECS, Fly.io, Railway, etc.).
+2. **Dashboard**, deploy to Vercel, Netlify, or any static hosting.
+3. **Redis**, use a managed Redis service (Upstash, Redis Cloud, AWS ElastiCache).
 
 ### Environment-Specific Configuration
 
 For production, update `docker-compose.yml` and environment variables accordingly.
-
-### Estimated Costs
-
-| Component   | Service      | Cost         |
-| ----------- | ------------ | ------------ |
-| 3 Agents    | Fly.io       | $5.82/mo     |
-| Redis       | Upstash Free | $0           |
-| Metrics API | Railway      | $5/mo        |
-| Dashboard   | Vercel       | $0           |
-| **Total**   |              | **~$11/mo**  |
 
 ---
 
@@ -384,7 +377,7 @@ MIT
 
 Built with:
 
-- [Claude Agent SDK](https://github.com/anthropics/anthropic-sdk-typescript)
+- [Anthropic TypeScript SDK (Claude Messages API)](https://github.com/anthropics/anthropic-sdk-typescript)
 - [Discord.js](https://discord.js.org/)
 - [React](https://react.dev/)
 - [Vite](https://vitejs.dev/)
