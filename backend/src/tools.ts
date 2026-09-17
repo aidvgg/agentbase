@@ -167,7 +167,12 @@ export class ToolExecutor {
   private resolvePath(filePath: string): string {
     // Prevent path traversal outside workspace
     const resolved = path.resolve(this.workingDirectory, filePath);
-    if (!resolved.startsWith(this.workingDirectory)) {
+    const relative = path.relative(this.workingDirectory, resolved);
+    const escapes =
+      relative === ".." ||
+      relative.startsWith(`..${path.sep}`) ||
+      path.isAbsolute(relative);
+    if (escapes) {
       throw new Error("Path traversal outside workspace is not allowed");
     }
     return resolved;
