@@ -12,6 +12,14 @@ interface AgentConfig {
   discordToken: string;
   anthropicApiKey: string;
   workingDirectory?: string;
+  maxToolTurns?: number;
+  execTimeoutMs?: number;
+}
+
+// Notice sent to the channel when a message hits the tool-turn cap, null below it.
+export function turnCapNotice(turns: number, maxToolTurns: number): string | null {
+  if (turns < maxToolTurns) return null;
+  return `I stopped at the ${maxToolTurns} tool turn limit without finishing this request. Please narrow it or split it up.`;
 }
 
 interface AgentActivity {
@@ -35,6 +43,7 @@ export class DiscordAgent {
   private toolExecutor: ToolExecutor;
   private lastCpuUsage: NodeJS.CpuUsage = process.cpuUsage();
   private lastCpuSampleAt: number = Date.now();
+  private maxToolTurns: number;
 
   constructor(config: AgentConfig) {
     this.agentId = config.agentId;
@@ -63,7 +72,12 @@ export class DiscordAgent {
       ],
     });
 
-    this.toolExecutor = new ToolExecutor(this._workingDirectory);
+    this.maxToolTurns =
+      config.maxToolTurns || Number(process.env.MAX_TOOL_TURNS) || 25;
+    this.toolExecutor = new ToolExecutor(
+      this._workingDirectory,
+      config.execTimeoutMs
+    );
   }
 
   async start(): Promise<void> {
@@ -184,9 +198,17 @@ export class DiscordAgent {
       let totalOutputTokens = 0;
       let finalResponse = "";
       let continueProcessing = true;
+      let toolTurns = 0;
 
-      // Agentic loop: allow Claude to use tools iteratively
+      // Agentic loop: allow Claude to use tools iteratively, up to the turn cap
       while (continueProcessing) {
+        const capNotice = turnCapNotice(toolTurns, this.maxToolTurns);
+        if (capNotice) {
+          finalResponse = capNotice;
+          break;
+        }
+        toolTurns++;
+
         const apiResponse = await this.claudeClient.messages.create({
           model: "claude-sonnet-4-20250514",
           max_tokens: 4096,

@@ -159,9 +159,12 @@ export const tools: Tool[] = [
 
 export class ToolExecutor {
   private workingDirectory: string;
+  private execTimeoutMs: number;
 
-  constructor(workingDirectory: string) {
+  constructor(workingDirectory: string, execTimeoutMs?: number) {
     this.workingDirectory = workingDirectory;
+    this.execTimeoutMs =
+      execTimeoutMs || Number(process.env.BASH_TIMEOUT_MS) || 60000;
   }
 
   private resolvePath(filePath: string): string {
@@ -308,6 +311,7 @@ export class ToolExecutor {
     const { stdout, stderr } = await execPromise(command, {
       cwd: workDir,
       maxBuffer: 1024 * 1024, // 1MB buffer
+      timeout: this.execTimeoutMs,
     });
     return stdout + (stderr ? `\nStderr: ${stderr}` : "");
   }
