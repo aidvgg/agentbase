@@ -2,9 +2,13 @@
 
 [![CI](https://github.com/aidvgg/agentbase/actions/workflows/ci.yml/badge.svg)](https://github.com/aidvgg/agentbase/actions/workflows/ci.yml)
 
-> Multi-Agent Claude Discord Infrastructure
+Put AI coworkers in your Discord server. Each one has a role, its own workspace and its own tools.
 
-A scalable, modular, multi-agent Discord infrastructure powered by the Anthropic TypeScript SDK (Claude Messages API), TypeScript, Redis, and Docker, with a real-time React dashboard for monitoring and management.
+You message an agent the way you would message a teammate. It reads the request, works in its own folder (files, git, shell commands), and replies in the channel. Each agent's role and rules live in one plain text file, so changing how it behaves means editing a document, not code. A web dashboard shows which agents are online and how many tasks each has handled.
+
+Every agent runs in its own Docker container, so one agent's workspace is separate from the next.
+
+Built with TypeScript, the Anthropic TypeScript SDK (Claude Messages API), Redis, Docker and a React dashboard.
 
 ---
 
