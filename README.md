@@ -33,11 +33,11 @@ Built with TypeScript, the Anthropic TypeScript SDK (Claude Messages API), Redis
 
 ## Features
 
-- **Multi-Agent Coordination**, deploy multiple specialized AI agents with unique personalities and capabilities.
+- **Multiple agents**: run several specialized agents side by side, each with its own role, prompt and tools. Agents work independently and do not message each other.
 - **Discord Integration**, each agent runs as a Discord bot, responding to mentions and direct messages.
 - **Real-time Monitoring**, live dashboard showing agent status, metrics, and activity logs.
 - **Containerized Deployment**, Docker-based architecture for easy scaling and isolation.
-- **Redis Coordination**, inter-agent communication and metrics via Redis pub/sub.
+- **Redis state**: each agent writes its status and metrics to Redis and publishes its activity on a pub/sub channel that the dashboard reads.
 - **TypeScript**, fully typed codebase for reliability and maintainability.
 
 ---
@@ -362,7 +362,7 @@ For production, update `docker-compose.yml` and environment variables accordingl
 ### Agent Lifecycle
 
 1. Agent initializes with the system prompt from `CLAUDE.md`.
-2. Connects to Redis for coordination.
+2. Connects to Redis to report status, metrics and activity.
 3. Logs into Discord.
 4. Starts metrics reporting (every 10 seconds).
 5. Listens for Discord messages.
