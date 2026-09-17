@@ -1,5 +1,3 @@
-> **ARCHIVED PRODUCT** — AgentBase is no longer an active product. It is retained for thesis and history (OpenClaw/Hermes OSS lineage). Do not treat this repo as a shipping product or live client proof. See also [ARCHIVED.md](./ARCHIVED.md).
-
 # AgentBase
 
 > Multi-Agent Claude Discord Infrastructure
