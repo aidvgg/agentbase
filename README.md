@@ -21,6 +21,7 @@ Built with TypeScript, the Anthropic TypeScript SDK (Claude Messages API), Redis
 - [Usage](#usage)
 - [Development](#development)
 - [API Endpoints](#api-endpoints)
+- [Security model](#security-model)
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
 - [Architecture Details](#architecture-details)
@@ -293,6 +294,21 @@ npm run preview
 ```
 
 `cpu` and `memory` are process-level measurements taken inside each agent container. `cpu` is the percent of one CPU core the agent process used between the last two metric samples, derived from `process.cpuUsage()` over elapsed wall time. `memory` is the agent process resident set size as a percent of the total memory the container sees.
+
+---
+
+## Security model
+
+Agents execute shell commands and git operations requested through Discord, inside their own container and workspace volume. Anyone who can message the bot can make it run commands as the agent. Run AgentBase only in a private server with members you trust, and give each agent credentials scoped to what it actually needs.
+
+Limits that exist today:
+
+- **Path guard**, the file tools (`read_file`, `write_file`, `list_directory`) and the git and shell working directories resolve inside the agent's workspace, and paths that escape it are rejected.
+- **Exec timeout**, `bash_command` is killed after `BASH_TIMEOUT_MS` milliseconds (default 60000).
+- **Turn cap**, each message stops after `MAX_TOOL_TURNS` tool turns (default 25), and the agent says so in the channel.
+- **Container isolation**, each agent runs in its own container with its own workspace volume, so one agent's files are separate from the next.
+
+There is no command allowlist and no sandbox inside the container. A command the agent runs can reach the network and anything else the container can reach.
 
 ---
 
